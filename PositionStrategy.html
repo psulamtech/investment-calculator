@@ -15,6 +15,19 @@
     --risk: #ff6b6b;
 }
 
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #2a314d;
+    color: var(--accent);        /* match the header color */
+    font-family: 'Segoe UI', sans-serif;  /* same as headers */
+    font-weight: bold;           /* make text bold like header */
+    font-size: 16px;             /* optional: match h3 size more closely */
+    text-align: center;          /* optional: center text like headers */
+}
+
 body {
     font-family: 'Segoe UI', sans-serif;
     background: var(--bg-main);
@@ -136,6 +149,11 @@ td {
     margin-top: 25px;
     color: #8c96b8;
     font-size: 14px;
+}
+
+input::placeholder {
+    color: #9aa4bf;   /* subtle like subtitle */
+    font-weight: normal;
 }
 </style>
 </head>
