@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Investment Position Calculator</title>
+
+<style>
+:root {
+    --bg-main: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    --container-bg: #121826;
+    --text-main: #e4e8f0;
+    --card-bg: #1b2235;
+    --accent: #4da3ff;
+    --profit: #4cd964;
+    --risk: #ff6b6b;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-main);
+    padding: 40px;
+    color: var(--text-main);
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: var(--container-bg);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+}
+
+h1 {
+    text-align: center;
+    color: var(--accent);
+}
+
+.subtitle {
+    text-align: center;
+    color: #9aa4bf;
+    margin-bottom: 25px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 20px;
+    border-left: 6px solid var(--accent);
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #2a314d;
+    color: white;
+}
+
+button.calculate {
+    margin-top: 25px;
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    background: linear-gradient(135deg, var(--accent), #00bfff);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.results-top {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.result-box {
+    background: var(--card-bg);
+    padding: 22px;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.result-box span {
+    display: block;
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 6px;
+    color: var(--accent);
+}
+
+.risk span {
+    color: var(--risk);
+}
+
+.tables {
+    margin-top: 35px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: var(--accent);
+    padding: 14px;
+    color: white;
+}
+
+td {
+    background: var(--card-bg);
+    padding: 14px;
+    text-align: center;
+}
+
+.profit {
+    color: var(--profit);
+    font-weight: bold;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #8c96b8;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Investment Position Calculator</h1>
+    <div class="subtitle">Risk-first • Position clarity • Think in R</div>
+
+    <!-- FORM -->
+    <form id="calcForm">
+        <div class="grid">
+            <div class="card">
+                <h3>Account Size ($)</h3>
+                <input id="account" value="200,000">
+            </div>
+            <div class="card">
+                <h3>Position %</h3>
+                <input id="positionPct" value="10">
+            </div>
+            <div class="card">
+                <h3>Risk %</h3>
+                <input id="riskPct" value="1">
+            </div>
+            <div class="card">
+                <h3>Entry Price ($)</h3>
+                <input id="entry" value="100">
+            </div>
+        </div>
+
+        <button class="calculate" type="submit">Calculate</button>
+    </form>
+
+    <!-- OUTPUTS -->
+    <div class="results-top">
+        <div class="result-box">
+            Position ($)
+            <span id="position"></span>
+        </div>
+        <div class="result-box">
+            Size (Shares)
+            <span id="shares"></span>
+        </div>
+        <div class="result-box risk">
+            Stop Loss
+            <span id="stop"></span>
+        </div>
+        <div class="result-box risk">
+            Risk $
+            <span id="risk"></span>
+        </div>
+    </div>
+
+    <!-- TABLES -->
+    <div class="tables">
+        <table>
+            <tr><th>Profit %</th><th>Profit ($)</th></tr>
+            <tr><td>10%</td><td class="profit" id="p10"></td></tr>
+            <tr><td>20%</td><td class="profit" id="p20"></td></tr>
+            <tr><td>30%</td><td class="profit" id="p30"></td></tr>
+            <tr><td>40%</td><td class="profit" id="p40"></td></tr>
+            <tr><td>50%</td><td class="profit" id="p50"></td></tr>
+        </table>
+
+        <table>
+            <tr><th>R-Multiple</th><th>Profit ($)</th></tr>
+            <tr><td id="r10"></td><td class="profit" id="rp10"></td></tr>
+            <tr><td id="r20"></td><td class="profit" id="rp20"></td></tr>
+            <tr><td id="r30"></td><td class="profit" id="rp30"></td></tr>
+            <tr><td id="r40"></td><td class="profit" id="rp40"></td></tr>
+            <tr><td id="r50"></td><td class="profit" id="rp50"></td></tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        Define risk • Size properly • Let R guide decisions
+    </div>
+</div>
+
+<script>
+document.getElementById("calcForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    calculate();
+});
+
+// Format number as USD
+function formatUSD(value) {
+    return Number(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+// Format number with 2 decimals (for % fields)
+function formatPercent(value) {
+    return Number(value).toFixed(2);
+}
+
+// Add blur listeners for all fields
+['account', 'positionPct', 'riskPct', 'entry'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('blur', function() {
+        let val = this.value.replace(/[^0-9.]/g, '');
+        if (!val) return;
+        if (id === 'account' || id === 'entry') {
+            this.value = formatUSD(val);
+        } else {
+            this.value = formatPercent(val);
+        }
+    });
+});
+
+function calculate() {
+    const account = Number(document.getElementById("account").value.replace(/,/g, ''));
+    const positionPct = Number(document.getElementById("positionPct").value) / 100;
+    const riskPct = Number(document.getElementById("riskPct").value) / 100;
+    const entry = Number(document.getElementById("entry").value.replace(/,/g, ''));
+
+    if (!account || !entry || positionPct <= 0 || riskPct <= 0) return;
+
+    const position = account * positionPct;
+    const risk = account * riskPct;
+    const shares = position / entry;
+    const stop = entry - (risk / shares);
+
+    document.getElementById("position").textContent = formatUSD(position);
+    document.getElementById("shares").textContent = Math.floor(shares).toLocaleString();
+    document.getElementById("stop").textContent = formatUSD(stop);
+    document.getElementById("risk").textContent = formatUSD(risk);
+
+    [10,20,30,40,50].forEach(p => {
+        const profit = position * (p / 100);
+        document.getElementById("p" + p).textContent = formatUSD(profit);
+        document.getElementById("r" + p).textContent = (profit / risk).toFixed(2) + "R";
+        document.getElementById("rp" + p).textContent = formatUSD(profit);
+    });
+}
+</script>
+
+</body>
+</html>
