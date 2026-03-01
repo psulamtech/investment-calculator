@@ -1,1 +1,1 @@
-# investment-calculator
+# investment
