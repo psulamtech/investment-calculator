@@ -683,8 +683,9 @@
             <label>Conviction</label>
             <select id="conviction" onchange="calc()">
               <option value="1">🟡 Low (5%)</option>
-              <option value="2" selected>🟢 Medium (15%)</option>
-              <option value="3">🔥 High (22%)</option>
+              <option value="2" selected>🟢 Medium (10%)</option>
+              <option value="3">🔥 High (15%)</option>
+              <option value="4">🚀 Max (20%)</option>
             </select>
           </div>
         </div>
@@ -1156,7 +1157,7 @@ function calc() {
   const conviction = parseInt(document.getElementById('conviction').value) || 2;
 
   // Conviction → max capital allocation % of account
-  const allocPct   = conviction === 1 ? 0.05 : conviction === 2 ? 0.15 : 0.22;
+  const allocPct   = conviction === 1 ? 0.05 : conviction === 2 ? 0.10 : conviction === 3 ? 0.15 : 0.20;
   const maxAlloc   = bal * allocPct;  // max $ to put in this trade
 
   const maxRisk    = bal * riskP;
@@ -1188,7 +1189,7 @@ function calc() {
   document.getElementById('r-accountReturn').textContent = fmtPct(accReturn);
 
   const rr = riskDollar > 0 ? profitDollar / riskDollar : 0;
-  const convLabel = conviction === 1 ? '🟡 Low' : conviction === 2 ? '🟢 Medium' : '🔥 High';
+  const convLabel = conviction === 1 ? '🟡 Low' : conviction === 2 ? '🟢 Medium' : conviction === 3 ? '🔥 High' : '🚀 Max';
   const banner = document.getElementById('qualityBanner');
   if (entry === 0) {
     banner.className = 'quality-banner neutral';
