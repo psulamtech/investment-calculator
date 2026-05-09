@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -638,6 +640,8 @@
     <button class="tab" onclick="switchTab('journal', this)">📒 Journal</button>
     <button class="tab" onclick="switchTab('performance', this)">📈 Performance</button>
     <button class="tab" onclick="switchTab('average', this)">🧮 Avg Calculator</button>
+    <button class="tab" onclick="switchTab('exit', this)">🎯 Exit Strategy</button>
+    <button class="tab" onclick="switchTab('stop', this)">🛡️ Stop Placement</button>
   </div>
 
   <!-- ═══════════════ PLANNER PANEL ══════════════ -->
@@ -1054,6 +1058,561 @@
 
   </div>
 
+  <!-- ═══════════════ EXIT STRATEGY PANEL ══════════════ -->
+  <div id="panel-exit" class="panel">
+
+    <!-- Intro -->
+    <div class="full-card" style="margin-bottom:24px;">
+      <div class="section-header">Why You Need an Exit Plan <span>the core problem with single exits</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="background:rgba(255,77,106,0.06);border:1px solid rgba(255,77,106,0.25);border-radius:10px;padding:20px;">
+          <div style="color:var(--red);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;font-weight:700;">❌ The Problem — All-or-Nothing Exit</div>
+          <ul style="list-style:none;font-size:0.83rem;color:#8aa0ba;line-height:2.2;">
+            <li>→ Hold too long → winner reverses into a loss</li>
+            <li>→ Exit early → watch it run 20% more without you</li>
+            <li>→ Either way you feel like you made the wrong call</li>
+            <li>→ Emotional exits destroy discipline over time</li>
+          </ul>
+        </div>
+        <div style="background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:20px;">
+          <div style="color:var(--accent);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;font-weight:700;">✅ The Solution — 3-Tier Partial Exit</div>
+          <ul style="list-style:none;font-size:0.83rem;color:#8aa0ba;line-height:2.2;">
+            <li>→ Tier 1 locks real profit early — you never lose money</li>
+            <li>→ Tier 2 hits your planned target — mission accomplished</li>
+            <li>→ Tier 3 runner lets you participate if it keeps going</li>
+            <li>→ Pre-planned rules remove emotion from every exit</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier Overview Cards -->
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="card" style="border-color:rgba(0,212,170,0.35);">
+        <div class="card-title">Tier 1 — Lock Profit</div>
+        <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);margin-bottom:6px;">35%</div>
+        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">of your position</div>
+        <div style="font-size:0.83rem;color:var(--text);margin-bottom:8px;font-weight:600;">Exit at 1:1 R/R</div>
+        <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.7;">Lock in the "free trade" zone. Move your remaining stop to breakeven. From this point on you cannot lose money on the trade.</div>
+      </div>
+      <div class="card" style="border-color:rgba(0,168,255,0.35);">
+        <div class="card-title">Tier 2 — Core Target</div>
+        <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent2);margin-bottom:6px;">40%</div>
+        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">of your position</div>
+        <div style="font-size:0.83rem;color:var(--text);margin-bottom:8px;font-weight:600;">Exit at 2:1 or 3:1 R/R</div>
+        <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.7;">Your planned profit target. Take it without hesitation — this is what you planned for when you entered the trade.</div>
+      </div>
+      <div class="card" style="border-color:rgba(245,200,66,0.35);">
+        <div class="card-title">Tier 3 — The Runner</div>
+        <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--gold);margin-bottom:6px;">25%</div>
+        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">of your position</div>
+        <div style="font-size:0.83rem;color:var(--text);margin-bottom:8px;font-weight:600;">Trail with a stop</div>
+        <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.7;">Let this ride with a trailing stop. If it explodes higher you participate. If it reverses your trail stop exits with profits locked.</div>
+      </div>
+    </div>
+
+    <!-- Calculator -->
+    <div class="full-card" style="margin-bottom:24px;">
+      <div class="section-header">Exit Plan Calculator <span>fill in your trade to get exact exit levels</span></div>
+
+      <div class="grid-2" style="margin-bottom:0;">
+        <div>
+          <div class="grid-2" style="gap:12px;margin-bottom:0;">
+            <div class="field">
+              <label>Stock Ticker</label>
+              <input type="text" id="exit-ticker" placeholder="AAPL" style="text-transform:uppercase" oninput="calcExit()">
+            </div>
+            <div class="field">
+              <label>Entry Price ($)</label>
+              <input type="number" id="exit-entry" placeholder="100.00" step="0.01" oninput="calcExit()">
+            </div>
+          </div>
+          <div class="grid-2" style="gap:12px;margin-bottom:0;">
+            <div class="field">
+              <label>Stop Loss Price ($)</label>
+              <input type="number" id="exit-stop" placeholder="95.00" step="0.01" oninput="calcExit()">
+            </div>
+            <div class="field">
+              <label>Number of Shares</label>
+              <input type="number" id="exit-shares" placeholder="100" oninput="calcExit()">
+            </div>
+          </div>
+          <div class="field">
+            <label>Tier 2 Target R/R</label>
+            <select id="exit-rr" onchange="calcExit()">
+              <option value="2">2:1 — Conservative</option>
+              <option value="3" selected>3:1 — Recommended</option>
+              <option value="4">4:1 — Aggressive</option>
+              <option value="5">5:1 — Very Aggressive</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <div class="field" style="margin-bottom:0;">
+              <label>Tier 1 % of Position</label>
+              <input type="number" id="exit-t1pct" value="35" min="10" max="60" oninput="calcExit()">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Tier 2 % of Position</label>
+              <input type="number" id="exit-t2pct" value="40" min="10" max="60" oninput="calcExit()">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Tier 3 % of Position</label>
+              <input type="number" id="exit-t3pct" value="25" min="5" max="50" oninput="calcExit()">
+            </div>
+          </div>
+          <div id="exit-tierWarn" style="display:none;margin-top:8px;font-size:0.78rem;color:var(--red);">⚠️ Tier percentages must add up to 100%</div>
+        </div>
+
+        <!-- Live Results -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+
+          <!-- Tier 1 row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div class="result-box" style="border-color:rgba(0,212,170,0.35);">
+              <div class="r-label">🟢 Tier 1 Sell Price</div>
+              <div class="r-value" id="exit-r-t1price">—</div>
+            </div>
+            <div class="result-box" style="border-color:rgba(0,212,170,0.35);">
+              <div class="r-label">Tier 1 Shares</div>
+              <div class="r-value" id="exit-r-t1shares">—</div>
+            </div>
+            <div class="result-box" style="border-color:rgba(0,212,170,0.35);">
+              <div class="r-label">Tier 1 Profit</div>
+              <div class="r-value" id="exit-r-t1profit">—</div>
+            </div>
+          </div>
+
+          <!-- Tier 2 row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div class="result-box" style="border-color:rgba(0,168,255,0.35);">
+              <div class="r-label">🔵 Tier 2 Sell Price</div>
+              <div class="r-value blue" id="exit-r-t2price">—</div>
+            </div>
+            <div class="result-box" style="border-color:rgba(0,168,255,0.35);">
+              <div class="r-label">Tier 2 Shares</div>
+              <div class="r-value blue" id="exit-r-t2shares">—</div>
+            </div>
+            <div class="result-box" style="border-color:rgba(0,168,255,0.35);">
+              <div class="r-label">Tier 2 Profit</div>
+              <div class="r-value blue" id="exit-r-t2profit">—</div>
+            </div>
+          </div>
+
+          <!-- Tier 3 row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div class="result-box" style="border-color:rgba(245,200,66,0.35);">
+              <div class="r-label">🟡 Runner — Trail Stop at</div>
+              <div class="r-value gold" id="exit-r-breakeven">—</div>
+            </div>
+            <div class="result-box" style="border-color:rgba(245,200,66,0.35);">
+              <div class="r-label">Runner Shares</div>
+              <div class="r-value gold" id="exit-r-t3shares">—</div>
+            </div>
+            <div class="result-box" style="border-color:rgba(245,200,66,0.35);">
+              <div class="r-label">Tier 3 Profit (min)</div>
+              <div class="r-value gold" id="exit-r-t3profit">—</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Banner + Profit Summary -->
+      <div id="exit-banner" class="quality-banner neutral" style="margin-top:20px;">
+        Enter your entry price, stop loss and shares above to generate your exit plan
+      </div>
+
+      <div id="exit-summary" style="display:none;margin-top:14px;background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:18px;">
+        <div style="font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;">Profit Breakdown</div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;">
+          <div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Max Risk</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--red)" id="exit-s-risk">—</div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Tier 1 Profit</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--accent)" id="exit-s-t1only">—</div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Tier 2 Profit</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--accent2)" id="exit-s-t2only">—</div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Tier 3 Profit</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--gold)" id="exit-s-t3only">—</div>
+          </div>
+          <div style="border-left:1px solid var(--border);padding-left:12px;">
+            <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">Total Profit</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--accent)" id="exit-s-fullprofit">—</div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px;">After T1+T2</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--accent2)" id="exit-s-t2profit">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compact reference card -->
+    <div class="full-card">
+      <div class="section-header">How It Works <span>quick reference</span></div>
+      <div class="grid-3" style="margin-bottom:20px;">
+        <div style="background:var(--input-bg);border-radius:10px;padding:16px;border:1px solid rgba(0,212,170,0.25);">
+          <div style="color:var(--accent);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">① At Entry</div>
+          <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.8;">Place limit SELL at Tier 2 price immediately. Set stop loss on full position. Walk away.</div>
+        </div>
+        <div style="background:var(--input-bg);border-radius:10px;padding:16px;border:1px solid rgba(0,168,255,0.25);">
+          <div style="color:var(--accent2);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">② At Tier 1 (1:1 R/R)</div>
+          <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.8;">Manually sell Tier 1 shares. Move stop to breakeven. You can no longer lose on this trade.</div>
+        </div>
+        <div style="background:var(--input-bg);border-radius:10px;padding:16px;border:1px solid rgba(245,200,66,0.25);">
+          <div style="color:var(--gold);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">③ Runner Management</div>
+          <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.8;">Trail stop below each new swing low daily. Let it run. Don't exit manually — let the stop do it.</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="color:var(--accent);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;font-weight:700;">✅ Always Do</div>
+          <ul style="list-style:none;font-size:0.8rem;color:#8aa0ba;line-height:2.2;">
+            <li>→ Move stop to breakeven after Tier 1 exits</li>
+            <li>→ Place Tier 2 limit order immediately at entry</li>
+            <li>→ Pre-plan all exit levels before entering</li>
+          </ul>
+        </div>
+        <div>
+          <div style="color:var(--red);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;font-weight:700;">❌ Never Do</div>
+          <ul style="list-style:none;font-size:0.8rem;color:#8aa0ba;line-height:2.2;">
+            <li>→ Move Tier 2 target higher mid-trade</li>
+            <li>→ Sell all shares at once out of fear</li>
+            <li>→ Let a winner reverse past your entry</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- ═══ END EXIT STRATEGY PANEL ═══ -->
+
+  <!-- ═══════════════ STOP PLACEMENT PANEL ══════════════ -->
+  <div id="panel-stop" class="panel">
+
+    <!-- Intro -->
+    <div class="full-card" style="margin-bottom:24px;">
+      <div class="section-header">Why Most Stops Get Hit <span>the real problem</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+        <div style="background:rgba(255,77,106,0.06);border:1px solid rgba(255,77,106,0.2);border-radius:10px;padding:16px;">
+          <div style="color:var(--red);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">❌ Fixed % Stop</div>
+          <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.8;">A 5% stop ignores chart structure. Volatile stocks move 5% in a single day — you get stopped by noise, not by being wrong.</div>
+        </div>
+        <div style="background:rgba(255,77,106,0.06);border:1px solid rgba(255,77,106,0.2);border-radius:10px;padding:16px;">
+          <div style="color:var(--red);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">❌ Round Number Stop</div>
+          <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.8;">Stops at $50.00 or just below a MA are hunted by algorithms. Price dips to grab them, then reverses — you're out before the real move.</div>
+        </div>
+        <div style="background:rgba(255,77,106,0.06);border:1px solid rgba(255,77,106,0.2);border-radius:10px;padding:16px;">
+          <div style="color:var(--red);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">❌ Late Entry Stop</div>
+          <div style="font-size:0.8rem;color:#8aa0ba;line-height:1.8;">Chasing an extended move means your valid stop is far away. You either accept huge risk or place it too tight — and get shaken out.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TradingView Chart -->
+    <div class="full-card" style="margin-bottom:24px;padding:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+        <div class="section-header" style="margin-bottom:0;">Live Chart <span>20MA · 50MA · ATR(14) pre-loaded</span></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="sp-chart-ticker" placeholder="Enter ticker e.g. AAPL"
+            style="width:200px;padding:8px 12px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.85rem;text-transform:uppercase;outline:none;"
+            onkeydown="if(event.key==='Enter') loadChart()">
+          <button class="btn btn-primary" onclick="loadChart()">Load Chart</button>
+        </div>
+      </div>
+      <div id="sp-chart-placeholder" style="height:500px;background:var(--input-bg);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);gap:10px;">
+        <div style="font-size:2rem;">📈</div>
+        <div style="font-size:0.85rem;">Type a ticker above and click Load Chart</div>
+        <div style="font-size:0.75rem;color:var(--border);">Chart will load with 20MA, 50MA and ATR(14) ready</div>
+      </div>
+      <div id="sp-chart-container" style="display:none;border-radius:10px;overflow:hidden;"></div>
+      <div style="margin-top:10px;font-size:0.72rem;color:var(--muted);">
+        💡 Read the <strong style="color:var(--text);">swing low</strong>, <strong style="color:var(--text);">20MA</strong>, <strong style="color:var(--text);">50MA</strong>, and <strong style="color:var(--text);">ATR</strong> values from the chart, then enter them in the calculator below.
+      </div>
+    </div>
+
+    <!-- Inputs + Results side by side -->
+    <div class="grid-2" style="margin-bottom:24px;align-items:start;">
+
+      <!-- Left: Inputs -->
+      <div class="full-card">
+        <div class="section-header">Your Trade Inputs <span>read from chart above</span></div>
+
+        <div class="grid-2" style="gap:12px;margin-bottom:0;">
+          <div class="field">
+            <label>Stock Ticker</label>
+            <input type="text" id="sp-ticker" placeholder="AAPL" style="text-transform:uppercase" oninput="calcStop()">
+          </div>
+          <div class="field">
+            <label>Entry Price ($)</label>
+            <input type="number" id="sp-entry" placeholder="100.00" step="0.01" oninput="calcStop()">
+          </div>
+        </div>
+
+        <div style="font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin:16px 0 10px;border-top:1px solid var(--border);padding-top:14px;">Chart Levels — read from the chart above</div>
+
+        <div class="field">
+          <label>Swing Low — lowest wick in last 5–10 candles ($)</label>
+          <input type="number" id="sp-swinglow" placeholder="e.g. 96.50" step="0.01" oninput="calcStop()">
+        </div>
+        <div class="field">
+          <label>20-Day MA Price ($) <span style="color:var(--muted);font-size:0.7rem;font-weight:400;">— shown on chart</span></label>
+          <input type="number" id="sp-ma20" placeholder="e.g. 97.20" step="0.01" oninput="calcStop()">
+        </div>
+        <div class="field">
+          <label>50-Day MA Price ($) <span style="color:var(--muted);font-size:0.7rem;font-weight:400;">— optional</span></label>
+          <input type="number" id="sp-ma50" placeholder="e.g. 94.80" step="0.01" oninput="calcStop()">
+        </div>
+        <div class="field">
+          <label>Base / Consolidation Low ($) <span style="color:var(--muted);font-size:0.7rem;font-weight:400;">— lowest point of recent range</span></label>
+          <input type="number" id="sp-baselow" placeholder="e.g. 95.00" step="0.01" oninput="calcStop()">
+        </div>
+        <div class="grid-2" style="gap:12px;margin-bottom:0;">
+          <div class="field">
+            <label>ATR (14) Value ($) <span style="color:var(--muted);font-size:0.7rem;font-weight:400;">— bottom of chart</span></label>
+            <input type="number" id="sp-atr" placeholder="e.g. 2.50" step="0.01" oninput="calcStop()">
+          </div>
+          <div class="field">
+            <label>Account Balance ($)</label>
+            <input type="number" id="sp-balance" placeholder="10000" oninput="calcStop()">
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Max Risk Per Trade (%)</label>
+          <input type="number" id="sp-riskpct" value="2" step="0.1" oninput="calcStop()">
+        </div>
+      </div>
+
+      <!-- Right: Stop Options -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div id="sp-nodata" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px;text-align:center;color:var(--muted);font-size:0.85rem;">
+          Fill in your entry price and at least one chart level to see stop options
+        </div>
+
+        <!-- Swing Low Stop -->
+        <div id="sp-card-swing" class="full-card" style="display:none;border-color:rgba(0,212,170,0.3);margin-bottom:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--accent);">📉 Swing Low Stop</div>
+            <div id="sp-swing-badge" class="badge open">—</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Stop Price</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-swing-stop">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Risk / Share</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-swing-risk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Position Size</div>
+              <div class="r-value blue" style="font-size:1.1rem;" id="sp-swing-shares">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">3:1 Target</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-swing-target">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Max $ Risk</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-swing-maxrisk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Target Profit</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-swing-profit">—</div>
+            </div>
+          </div>
+          <div id="sp-swing-warnings" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+
+        <!-- 20MA Stop -->
+        <div id="sp-card-ma20" class="full-card" style="display:none;border-color:rgba(0,168,255,0.3);margin-bottom:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--accent2);">📈 20-Day MA Stop</div>
+            <div id="sp-ma20-badge" class="badge open">—</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Stop Price</div>
+              <div class="r-value blue" style="font-size:1.1rem;" id="sp-ma20-stop">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Risk / Share</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-ma20-risk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Position Size</div>
+              <div class="r-value blue" style="font-size:1.1rem;" id="sp-ma20-shares">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">3:1 Target</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-ma20-target">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Max $ Risk</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-ma20-maxrisk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Target Profit</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-ma20-profit">—</div>
+            </div>
+          </div>
+          <div id="sp-ma20-warnings" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+
+        <!-- 50MA Stop -->
+        <div id="sp-card-ma50" class="full-card" style="display:none;border-color:rgba(245,200,66,0.3);margin-bottom:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--gold);">📊 50-Day MA Stop</div>
+            <div id="sp-ma50-badge" class="badge open">—</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Stop Price</div>
+              <div class="r-value gold" style="font-size:1.1rem;" id="sp-ma50-stop">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Risk / Share</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-ma50-risk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Position Size</div>
+              <div class="r-value blue" style="font-size:1.1rem;" id="sp-ma50-shares">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">3:1 Target</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-ma50-target">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Max $ Risk</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-ma50-maxrisk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Target Profit</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-ma50-profit">—</div>
+            </div>
+          </div>
+          <div id="sp-ma50-warnings" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+
+        <!-- Base Low Stop -->
+        <div id="sp-card-base" class="full-card" style="display:none;border-color:rgba(188,140,255,0.3);margin-bottom:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#bc8cff;">🏗️ Base Low Stop</div>
+            <div id="sp-base-badge" class="badge open">—</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Stop Price</div>
+              <div class="r-value" style="font-size:1.1rem;color:#bc8cff;" id="sp-base-stop">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Risk / Share</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-base-risk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Position Size</div>
+              <div class="r-value blue" style="font-size:1.1rem;" id="sp-base-shares">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;">
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">3:1 Target</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-base-target">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Max $ Risk</div>
+              <div class="r-value red" style="font-size:1.1rem;" id="sp-base-maxrisk">—</div>
+            </div>
+            <div class="result-box" style="padding:12px;">
+              <div class="r-label">Target Profit</div>
+              <div class="r-value" style="font-size:1.1rem;" id="sp-base-profit">—</div>
+            </div>
+          </div>
+          <div id="sp-base-warnings" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Recommendation Banner -->
+    <div id="sp-banner" class="quality-banner neutral" style="margin-bottom:24px;">
+      Enter your trade details above to get a stop placement recommendation
+    </div>
+
+    <!-- Entry Timing Check -->
+    <div class="full-card" style="margin-bottom:24px;">
+      <div class="section-header">Entry Timing Check <span>are you chasing or entering well?</span></div>
+      <div class="grid-2" style="gap:12px;margin-bottom:16px;">
+        <div class="field">
+          <label>Distance from 20MA (%) <span style="color:var(--muted);font-size:0.7rem;font-weight:400;">— how far above the 20MA is current price?</span></label>
+          <input type="number" id="sp-ma20dist" placeholder="e.g. 3.5" step="0.1" oninput="calcEntryTiming()">
+        </div>
+        <div class="field">
+          <label>Distance from Breakout Base (%) <span style="color:var(--muted);font-size:0.7rem;font-weight:400;">— how far above the base is current price?</span></label>
+          <input type="number" id="sp-basedist" placeholder="e.g. 5.0" step="0.1" oninput="calcEntryTiming()">
+        </div>
+      </div>
+      <div id="sp-timing-result" style="display:none;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;">
+        <div class="result-box">
+          <div class="r-label">From 20MA</div>
+          <div class="r-value" id="sp-t-ma20pct">—</div>
+        </div>
+        <div class="result-box">
+          <div class="r-label">From Base</div>
+          <div class="r-value" id="sp-t-basepct">—</div>
+        </div>
+        <div class="result-box">
+          <div class="r-label">Entry Zone</div>
+          <div class="r-value" id="sp-t-zone">—</div>
+        </div>
+      </div>
+      <div id="sp-timing-banner" class="quality-banner neutral">
+        Enter distances above to check your entry timing
+      </div>
+    </div>
+
+    <!-- Quick Reference -->
+    <div class="full-card">
+      <div class="section-header">Stop Placement Rules <span>memorize these</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="color:var(--accent);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;font-weight:700;">✅ Good Stop Habits</div>
+          <ul style="list-style:none;font-size:0.8rem;color:#8aa0ba;line-height:2.3;">
+            <li>→ Place stop based on chart structure, not a fixed %</li>
+            <li>→ Add a small buffer (0.5–1%) beyond the structural level</li>
+            <li>→ Let stop distance determine position size</li>
+            <li>→ Wider stop = fewer shares, not more risk</li>
+            <li>→ Only enter if 3:1 R/R is still valid at that stop</li>
+          </ul>
+        </div>
+        <div>
+          <div style="color:var(--red);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;font-weight:700;">❌ Stop Mistakes to Avoid</div>
+          <ul style="list-style:none;font-size:0.8rem;color:#8aa0ba;line-height:2.3;">
+            <li>→ Never place stop at a round number ($50, $100)</li>
+            <li>→ Never place stop exactly at the MA — add buffer</li>
+            <li>→ Never widen your stop after entry to avoid loss</li>
+            <li>→ Never enter a trade if the stop makes R/R less than 3:1</li>
+            <li>→ Never ignore ATR — if stop &lt; 1× ATR, it will be hit by noise</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- ═══ END STOP PLACEMENT PANEL ═══ -->
+
 </main>
 
 <script>
@@ -1127,6 +1686,8 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   if (name === 'journal') renderJournal();
   if (name === 'performance') updatePerformance();
+  if (name === 'exit') calcExit();
+  if (name === 'stop') calcStop();
 }
 
 // ── Formatting ────────────────────────────────────────
@@ -1613,6 +2174,285 @@ function calcLadder() {
 }
 
 renderLadder();
+
+// ── Exit Strategy Calculator ──────────────────────────
+function calcExit() {
+  const entry  = parseFloat(document.getElementById('exit-entry').value);
+  const stop   = parseFloat(document.getElementById('exit-stop').value);
+  const shares = parseFloat(document.getElementById('exit-shares').value);
+  const rr     = parseFloat(document.getElementById('exit-rr').value) || 3;
+  const t1pct  = parseFloat(document.getElementById('exit-t1pct').value) || 35;
+  const t2pct  = parseFloat(document.getElementById('exit-t2pct').value) || 40;
+  const t3pct  = parseFloat(document.getElementById('exit-t3pct').value) || 25;
+
+  const tierTotal = t1pct + t2pct + t3pct;
+  const warnEl = document.getElementById('exit-tierWarn');
+  if (warnEl) warnEl.style.display = Math.round(tierTotal) !== 100 ? 'block' : 'none';
+
+  const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+  const banner  = document.getElementById('exit-banner');
+  const summary = document.getElementById('exit-summary');
+
+  if (!entry || !stop || !shares || entry <= stop) {
+    if (banner)  { banner.className = 'quality-banner neutral'; banner.innerHTML = 'Enter your entry price, stop loss and shares above to generate your exit plan'; }
+    if (summary) summary.style.display = 'none';
+    ['exit-r-t1price','exit-r-t1shares','exit-r-t1profit','exit-r-t2price','exit-r-t2shares','exit-r-t2profit',
+     'exit-r-t3shares','exit-r-t3profit','exit-r-breakeven'].forEach(id => setVal(id, '—'));
+    return;
+  }
+
+  const risk     = entry - stop;
+  const t1Price  = entry + risk;
+  const t2Price  = entry + risk * rr;
+
+  const t1Shares = Math.round(shares * t1pct / 100);
+  const t2Shares = Math.round(shares * t2pct / 100);
+  const t3Shares = shares - t1Shares - t2Shares;
+
+  const t1Profit  = t1Shares * (t1Price - entry);
+  const t2Profit  = t2Shares * (t2Price - entry);
+  const t3Profit  = t3Shares * (t2Price - entry);
+  const totalRisk = shares * risk;
+
+  setVal('exit-r-t1price',   '$' + fmt(t1Price));
+  setVal('exit-r-t1shares',  t1Shares + ' shares');
+  setVal('exit-r-t1profit',  '+$' + fmt(t1Profit));
+  setVal('exit-r-t2price',   '$' + fmt(t2Price));
+  setVal('exit-r-t2shares',  t2Shares + ' shares');
+  setVal('exit-r-t2profit',  '+$' + fmt(t2Profit));
+  setVal('exit-r-t3shares',  t3Shares + ' shares');
+  setVal('exit-r-t3profit',  '+$' + fmt(t3Profit));
+  setVal('exit-r-breakeven', '$' + fmt(entry));
+
+  setVal('exit-s-risk',       '-$' + fmt(totalRisk));
+  setVal('exit-s-t1only',     '+$' + fmt(t1Profit));
+  setVal('exit-s-t2only',     '+$' + fmt(t2Profit));
+  setVal('exit-s-t3only',     '+$' + fmt(t3Profit));
+  setVal('exit-s-t2profit',   '+$' + fmt(t1Profit + t2Profit));
+  setVal('exit-s-fullprofit', '+$' + fmt(t1Profit + t2Profit + t3Profit));
+
+  const ticker = (document.getElementById('exit-ticker').value || 'Trade').toUpperCase();
+  if (banner) {
+    banner.className = 'quality-banner valid';
+    banner.innerHTML = `✅ ${ticker} EXIT PLAN READY  —  Tier 1: ${t1Shares} shares @ $${fmt(t1Price)}  ·  Tier 2: ${t2Shares} shares @ $${fmt(t2Price)}  ·  Runner: ${t3Shares} shares with trailing stop`;
+  }
+  if (summary) summary.style.display = 'block';
+}
+// ── TradingView Chart Loader ──────────────────────────
+function loadChart() {
+  const tickerInput = document.getElementById('sp-chart-ticker');
+  const ticker = (tickerInput.value || '').trim().toUpperCase();
+  if (!ticker) { tickerInput.focus(); return; }
+
+  const placeholder = document.getElementById('sp-chart-placeholder');
+  const container   = document.getElementById('sp-chart-container');
+
+  placeholder.style.display = 'none';
+  container.style.display   = 'block';
+  container.innerHTML = '';
+
+  // Also sync ticker to the calculator input
+  const calcTicker = document.getElementById('sp-ticker');
+  if (calcTicker && !calcTicker.value) calcTicker.value = ticker;
+
+  const widgetDiv = document.createElement('div');
+  widgetDiv.id = 'tv-widget-' + Date.now();
+  widgetDiv.style.height = '500px';
+  container.appendChild(widgetDiv);
+
+  const script = document.createElement('script');
+  script.src = 'https://s3.tradingview.com/tv.js';
+  script.onload = function() {
+    new TradingView.widget({
+      container_id: widgetDiv.id,
+      symbol: 'NASDAQ:' + ticker,
+      interval: 'D',
+      timezone: 'America/New_York',
+      theme: 'dark',
+      style: '1',
+      locale: 'en',
+      toolbar_bg: '#0d1421',
+      enable_publishing: false,
+      hide_top_toolbar: false,
+      hide_legend: false,
+      save_image: false,
+      height: 500,
+      width: '100%',
+      studies: [
+        { id: 'MASimple@tv-scriptstd', inputs: { length: 20 } },
+        { id: 'MASimple@tv-scriptstd', inputs: { length: 50 } },
+        { id: 'ATR@tv-scriptstd',      inputs: { length: 14 } },
+      ],
+      overrides: {
+        'mainSeriesProperties.candleStyle.upColor':   '#00d4aa',
+        'mainSeriesProperties.candleStyle.downColor': '#ff4d6a',
+        'mainSeriesProperties.candleStyle.borderUpColor':   '#00d4aa',
+        'mainSeriesProperties.candleStyle.borderDownColor': '#ff4d6a',
+        'mainSeriesProperties.candleStyle.wickUpColor':   '#00d4aa',
+        'mainSeriesProperties.candleStyle.wickDownColor': '#ff4d6a',
+        'paneProperties.background':           '#080c14',
+        'paneProperties.backgroundType':       'solid',
+        'paneProperties.vertGridProperties.color': '#1e2d45',
+        'paneProperties.horzGridProperties.color': '#1e2d45',
+      }
+    });
+  };
+
+  // If tv.js already loaded, just create widget directly
+  if (window.TradingView) {
+    script.onload();
+  } else {
+    document.head.appendChild(script);
+  }
+}
+
+// ── Stop Placement Helper ─────────────────────────────
+function calcStop() {
+  const entry   = parseFloat(document.getElementById('sp-entry').value);
+  const swing   = parseFloat(document.getElementById('sp-swinglow').value);
+  const ma20    = parseFloat(document.getElementById('sp-ma20').value);
+  const ma50    = parseFloat(document.getElementById('sp-ma50').value);
+  const base    = parseFloat(document.getElementById('sp-baselow').value);
+  const atr     = parseFloat(document.getElementById('sp-atr').value);
+  const balance = parseFloat(document.getElementById('sp-balance').value) || 10000;
+  const riskPct = parseFloat(document.getElementById('sp-riskpct').value) || 2;
+  const ticker  = (document.getElementById('sp-ticker').value || 'Trade').toUpperCase();
+  const maxRisk = balance * riskPct / 100;
+  const BUFFER  = 0.005; // 0.5% buffer below structural level
+
+  const nodata  = document.getElementById('sp-nodata');
+  const banner  = document.getElementById('sp-banner');
+
+  const hasAny  = entry && (swing || ma20 || ma50 || base);
+  nodata.style.display = hasAny ? 'none' : 'block';
+  if (!hasAny) {
+    banner.className = 'quality-banner neutral';
+    banner.innerHTML = 'Enter your trade details above to get a stop placement recommendation';
+    ['swing','ma20','ma50','base'].forEach(k => {
+      document.getElementById('sp-card-' + k).style.display = 'none';
+    });
+    return;
+  }
+
+  const configs = [
+    { key: 'swing', level: swing,  label: 'Swing Low' },
+    { key: 'ma20',  level: ma20,   label: '20MA'      },
+    { key: 'ma50',  level: ma50,   label: '50MA'      },
+    { key: 'base',  level: base,   label: 'Base Low'  },
+  ];
+
+  let bestKey = null, bestScore = -1;
+
+  configs.forEach(({ key, level, label }) => {
+    const card = document.getElementById('sp-card-' + key);
+    if (!level || level >= entry) { card.style.display = 'none'; return; }
+
+    card.style.display = 'block';
+    const stopPrice   = level * (1 - BUFFER);
+    const riskPerShare = entry - stopPrice;
+    const riskPctVal  = (riskPerShare / entry) * 100;
+    const shares      = riskPerShare > 0 ? Math.floor(maxRisk / riskPerShare) : 0;
+    const target      = entry + riskPerShare * 3;
+    const profit      = shares * riskPerShare * 3;
+    const isRound     = Math.abs(stopPrice - Math.round(stopPrice)) < 0.05;
+    const tooTight    = atr ? riskPerShare < atr : false;
+    const rrValid     = riskPctVal <= 8;
+
+    // Warnings
+    const warnEl = document.getElementById('sp-' + key + '-warnings');
+    const warns = [];
+    if (isRound) warns.push({ color: 'var(--gold)', msg: '⚠️ Stop near a round number — consider moving 0.5% lower to avoid stop hunts' });
+    if (tooTight) warns.push({ color: 'var(--red)', msg: '❌ Stop is tighter than 1× ATR — normal daily volatility may hit it. Widen or skip.' });
+    if (riskPctVal > 8) warns.push({ color: 'var(--red)', msg: '❌ Risk too wide (' + fmt(riskPctVal,1) + '%) — position size will be very small. Consider a tighter entry.' });
+    if (!tooTight && !isRound && rrValid) warns.push({ color: 'var(--accent)', msg: '✅ Structurally sound stop — good placement' });
+    warnEl.innerHTML = warns.map(w =>
+      `<div style="font-size:0.78rem;color:${w.color};background:var(--input-bg);border-radius:6px;padding:8px 12px;">${w.msg}</div>`
+    ).join('');
+
+    // Badge
+    const badge = document.getElementById('sp-' + key + '-badge');
+    if (!tooTight && rrValid) {
+      badge.className = 'badge win'; badge.textContent = '✅ Valid';
+      const score = rrValid ? (10 - riskPctVal) : 0;
+      if (score > bestScore) { bestScore = score; bestKey = key; }
+    } else {
+      badge.className = 'badge loss'; badge.textContent = '⚠️ Check';
+    }
+
+    // Values
+    const sv = (id, val) => { const el = document.getElementById('sp-' + key + '-' + id); if(el) el.textContent = val; };
+    sv('stop',    '$' + fmt(stopPrice));
+    sv('risk',    '$' + fmt(riskPerShare));
+    sv('shares',  shares + ' shares');
+    sv('target',  '$' + fmt(target));
+    sv('maxrisk', '$' + fmt(maxRisk));
+    sv('profit',  '+$' + fmt(profit));
+  });
+
+  // Recommendation banner
+  if (bestKey) {
+    const labels = { swing: 'Swing Low', ma20: '20MA', ma50: '50MA', base: 'Base Low' };
+    const stopEl = document.getElementById('sp-' + bestKey + '-stop');
+    banner.className = 'quality-banner valid';
+    banner.innerHTML = `✅ ${ticker} BEST STOP: Use the <strong>${labels[bestKey]} Stop</strong> at ${stopEl ? stopEl.textContent : '—'} — structurally sound with valid 3:1 R/R`;
+  } else {
+    banner.className = 'quality-banner invalid';
+    banner.innerHTML = `❌ No clean stop found — all levels produce either too-tight or too-wide risk. Consider waiting for a better entry closer to support.`;
+  }
+}
+
+function calcEntryTiming() {
+  const ma20dist  = parseFloat(document.getElementById('sp-ma20dist').value);
+  const basedist  = parseFloat(document.getElementById('sp-basedist').value);
+  const banner    = document.getElementById('sp-timing-banner');
+  const resultDiv = document.getElementById('sp-timing-result');
+
+  if (!ma20dist && !basedist) {
+    banner.className = 'quality-banner neutral';
+    banner.innerHTML = 'Enter distances above to check your entry timing';
+    resultDiv.style.display = 'none';
+    return;
+  }
+
+  resultDiv.style.display = 'grid';
+
+  const ma20color = !ma20dist ? 'var(--muted)' : ma20dist <= 3 ? 'var(--accent)' : ma20dist <= 7 ? 'var(--gold)' : 'var(--red)';
+  const basecolor = !basedist ? 'var(--muted)' : basedist <= 5 ? 'var(--accent)' : basedist <= 10 ? 'var(--gold)' : 'var(--red)';
+
+  const ma20el = document.getElementById('sp-t-ma20pct');
+  const baseel = document.getElementById('sp-t-basepct');
+  const zoneel = document.getElementById('sp-t-zone');
+
+  if (ma20el) { ma20el.textContent = ma20dist ? fmt(ma20dist,1) + '% above' : '—'; ma20el.style.color = ma20color; }
+  if (baseel) { baseel.textContent = basedist ? fmt(basedist,1) + '% above' : '—'; baseel.style.color = basecolor; }
+
+  // Determine entry zone
+  const worst = Math.max(ma20dist || 0, basedist || 0);
+  let zoneText, zoneColor, bannerClass, bannerMsg;
+
+  if (worst <= 3) {
+    zoneText = 'Ideal'; zoneColor = 'var(--accent)';
+    bannerClass = 'quality-banner valid';
+    bannerMsg = '✅ IDEAL ENTRY ZONE — Price is close to base and MA. Stop can be tight, R/R is favorable. Good time to enter.';
+  } else if (worst <= 7) {
+    zoneText = 'Acceptable'; zoneColor = 'var(--gold)';
+    bannerClass = 'quality-banner neutral';
+    bannerMsg = '⚠️ ACCEPTABLE — Slightly extended but manageable. Make sure stop is still below a structural level and R/R is at least 3:1.';
+  } else if (worst <= 12) {
+    zoneText = 'Extended'; zoneColor = 'var(--gold)';
+    bannerClass = 'quality-banner invalid';
+    bannerMsg = '⚠️ EXTENDED ENTRY — Price is stretched from its base. Wait for a pullback to the 20MA or base before entering. Stop would need to be very wide.';
+  } else {
+    zoneText = 'Chasing'; zoneColor = 'var(--red)';
+    bannerClass = 'quality-banner invalid';
+    bannerMsg = '❌ CHASING — Price is too extended. Do NOT enter here. Wait for a proper pullback. Entering now = wide stop, poor R/R, high chance of getting shaken out.';
+  }
+
+  if (zoneel) { zoneel.textContent = zoneText; zoneel.style.color = zoneColor; }
+  banner.className = bannerClass;
+  banner.innerHTML = bannerMsg;
+}
 </script>
 </body>
 </html>
